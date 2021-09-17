@@ -148,7 +148,11 @@ func setUserConcurrentSessionsLimitPolicy(d *schema.ResourceData, policy *UserCo
 }
 
 func getUserConcurrentSessionsLimitPolicy(d *schema.ResourceData) UserConcurrentSessionsLimitPolicy {
-	resourceAsMap := d.Get("user_concurrent_sessions_limit").([]interface{})[0].(map[string]interface{})
+	resource, ok := d.GetOk("user_concurrent_sessions_limit")
+	if !ok {
+		return DefaultPolicies.UserConcurrentSessionsLimit
+	}
+	resourceAsMap := resource.([]interface{})[0].(map[string]interface{})
 	var userConcurrentSessionsLimitPolicy UserConcurrentSessionsLimitPolicy
 	userConcurrentSessionsLimitPolicy.Enabled = resourceAsMap["enabled"].(bool)
 	userConcurrentSessionsLimitPolicy.MaxConcurrentSessions = resourceAsMap["max_concurrent_sessions"].(int)
